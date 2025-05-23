@@ -31,7 +31,7 @@ export default function DebtsClient() {
   } = useDiscordUsers(ids)
 
   if (loadingDebts || loadingUsers) {
-    return <p className="p-8 text-gray-500">Loading…</p>
+    return <p className="p-8">Loading…</p>
   }
   if (errorDebts) {
     return <p className="p-8 text-red-500">Error loading debts: {errorDebts}</p>
@@ -40,12 +40,42 @@ export default function DebtsClient() {
     return <p className="p-8 text-red-500">Error loading user names: {errorUsers}</p>
   }
 
+  /**
+ * Turn a string like "91/6" into "15 1/6",
+ * "7/3" into "2 1/3", "4/2" into "2", "3/4" stays "3/4", and
+ * plain numbers pass through unchanged.
+ */
+function formatMixed(fraction: string): string {
+  // if it’s not a fraction, just return it
+  if (!fraction.includes('/')) return fraction;
+
+  const [numStr, denStr] = fraction.split('/');
+  const num = parseInt(numStr, 10);
+  const den = parseInt(denStr, 10);
+
+  if (isNaN(num) || isNaN(den) || den === 0) return fraction;
+
+  const whole = Math.floor(num / den);
+  const rem = num % den;
+
+  if (rem === 0) {
+    // exact division
+    return String(whole);
+  }
+  if (whole === 0) {
+    // proper fraction
+    return `${rem}/${den}`;
+  }
+  // mixed number
+  return `${whole} ${rem}/${den}`;
+}
+
   return (
     <main className="p-8 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">All Pint Debts</h1>
 
       {debts.length === 0 ? (
-        <p className="text-gray-500">No pint debts found.</p>
+        <p>No pint debts found.</p>
       ) : (
         <ul className="space-y-2 mb-6">
           {debts.map((d) => {
@@ -55,7 +85,8 @@ export default function DebtsClient() {
             return (
               <li key={d.id} className="border p-4 rounded">
                 <p>
-                  <strong>{displayName}</strong> owes <em>{d.owes} pints</em> and is owed <em>{d.isOwed} pints</em>
+                  <em>{formatMixed(d.owes)} pints</em> and is owed{' '}
+                  <em>{formatMixed(d.isOwed)} pints</em>
                 </p>
               </li>
             )
@@ -65,7 +96,7 @@ export default function DebtsClient() {
 
       <section className="text-right">
         <h2 className="font-semibold">Total in Circulation:</h2>
-        <p className="text-lg">{total} pints</p>
+        <p className="text-lg">{formatMixed(total)} pints</p>
       </section>
     </main>
   )
