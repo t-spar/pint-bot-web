@@ -6,6 +6,8 @@ import { NextResponse } from 'next/server'
  */
 const nameCache = new Map<string, string>()
 
+const MAX_RETRIES = 2
+
 /**
  * Fetch a single user.
  */
@@ -15,13 +17,19 @@ async function fetchMemberWithRetry(id: string, token: string, serverId: string)
 
   while (true) {
     attempt++
+
+    if (attempt > MAX_RETRIES) {
+      throw new Error(`Too many retries (${MAX_RETRIES}) fetching member ${id}`)
+    }
+
     const res = await fetch(url, {
       headers: { Authorization: `Bot ${token}` },
     })
 
     if (res.status === 429) {
       const retryAfter = Number(res.headers.get('retry-after') ?? '1') * 1000
-      await new Promise(r => setTimeout(r, retryAfter))
+      console.warn(`Rate limited fetching ${id}, retry #${attempt} in ${retryAfter}ms`)
+      await new Promise((r) => setTimeout(r, retryAfter))
       continue
     }
 
@@ -38,9 +46,8 @@ async function fetchMemberWithRetry(id: string, token: string, serverId: string)
       user: { username: string; discriminator: string; global_name: string | null }
     }
 
-    const displayName = member.nick
-      ?? member.user.global_name
-      ?? `${member.user.username}#${member.user.discriminator}`
+    const displayName =
+      member.nick ?? member.user.global_name ?? `${member.user.username}#${member.user.discriminator}`
 
     return { id, displayName }
   }
@@ -62,7 +69,7 @@ async function fetchUserGlobal(id: string, token: string) {
     discriminator: string
     global_name: string | null
   }
-  const displayName = u.global_name || `${u.username}#${u.discriminator}`
+  const displayName = u.global_name ?? `${u.username}#${u.discriminator}`
   return { id, displayName }
 }
 
@@ -91,12 +98,13 @@ export async function GET(request: Request) {
         nameCache.set(id, member.displayName)
         users.push(member)
       }
-      await new Promise(r => setTimeout(r, 100))
+      // small delay between calls to avoid hitting rate limits
+      await new Promise((r) => setTimeout(r, 100))
     }
 
     return NextResponse.json({ users })
   } catch (err: any) {
     console.error(err)
-    return NextResponse.json({ error: err.message || 'Unknown error' }, { status: 500 })
+    return NextResponse.json({ error: err.message ?? 'Unknown error' }, { status: 500 })
   }
 }
