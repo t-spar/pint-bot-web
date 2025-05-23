@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const res = await fetch(`${process.env.PINT_BOT_API_URL}/all_pints`)
+  const res = await fetch(`${process.env.BOT_API_URL}/all_pints`)
   if (!res.ok) {
     return NextResponse.json(
       { error: `Upstream error ${res.status}` },
