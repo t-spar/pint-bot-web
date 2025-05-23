@@ -84,10 +84,9 @@ export default function DebtsClient() {
 
             return (
               <li key={d.id} className="border p-4 rounded">
-                <p>
-                  <em>{formatMixed(d.owes)} pints</em> and is owed{' '}
-                  <em>{formatMixed(d.isOwed)} pints</em>
-                </p>
+                <p><strong>{displayName}</strong></p>
+                <p><em>owes</em> {formatMixed(d.owes)} pints</p>
+                <p><em>owed</em> {formatMixed(d.isOwed)} pints</p>
               </li>
             )
           })}
