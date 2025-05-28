@@ -1,5 +1,5 @@
 import UserProfile from './UserProfile'
 
-export default async function DebtsPage() {
+export default async function UserProfilePage() {
   return <UserProfile/>
 }
