@@ -1,10 +1,10 @@
 /**
- * Turn a string like "91/6" into "15 1/6",
- * "7/3" into "2 1/3", "4/2" into "2", "3/4" stays "3/4", and
- * plain numbers pass through unchanged.
+ * Format a fraction string into a simplified, mixed number.
+ *
+ * Handles improper fractions, simplifies to lowest terms,
+ * and gracefully skips invalid or non-fraction inputs.
  */
 export function formatMixed(fraction: string): string {
-  // if it’s not a fraction, just return it
   if (!fraction.includes("/")) return fraction;
 
   const [numStr, denStr] = fraction.split("/");
@@ -13,17 +13,19 @@ export function formatMixed(fraction: string): string {
 
   if (isNaN(num) || isNaN(den) || den === 0) return fraction;
 
-  const whole = Math.floor(num / den);
-  const rem = num % den;
+  // Simplify the fraction
+  const gcd = (a: number, b: number): number => {
+    return b === 0 ? a : gcd(b, a % b);
+  };
 
-  if (rem === 0) {
-    // exact division
-    return String(whole);
-  }
-  if (whole === 0) {
-    // proper fraction
-    return `${rem}/${den}`;
-  }
-  // mixed number
-  return `${whole} ${rem}/${den}`;
+  const divisor = gcd(num, den);
+  const simplifiedNum = num / divisor;
+  const simplifiedDen = den / divisor;
+
+  const whole = Math.floor(simplifiedNum / simplifiedDen);
+  const rem = simplifiedNum % simplifiedDen;
+
+  if (rem === 0) return String(whole);
+  if (whole === 0) return `${rem}/${simplifiedDen}`;
+  return `${whole} ${rem}/${simplifiedDen}`;
 }
