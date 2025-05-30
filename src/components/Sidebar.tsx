@@ -15,15 +15,15 @@ export default function Sidebar() {
     }, []);
 
     function toggleDark() {
+        const root = document.documentElement;
         if (isDark) {
-            document.documentElement.classList.remove('dark');
+            root.classList.remove('dark');
             localStorage.setItem('theme', 'light');
-            setIsDark(false);
         } else {
-            document.documentElement.classList.add('dark');
+            root.classList.add('dark');
             localStorage.setItem('theme', 'dark');
-            setIsDark(true);
         }
+        setIsDark(!isDark);
     }
 
     const links = [
