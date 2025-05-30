@@ -6,7 +6,7 @@ import { useDiscordUsers } from '@/hooks/useDiscordUsers'
 import { DebtEntry } from '@/lib/pint-bot-api/utils'
 import { formatMixed } from '@/lib/utils/formatting'
 
-export default function DebtsClient() {
+export default function AllDebtsClient() {
   const [debts, setDebts] = useState<DebtEntry[]>([])
   const [total, setTotal] = useState<string>('0')
   const [loadingDebts, setLoadingDebts] = useState(true)

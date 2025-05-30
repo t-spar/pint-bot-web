@@ -1,5 +1,5 @@
-import DebtsClient from './DebtsClient'
+import AllDebtsClient from './AllDebtsClient'
 
-export default async function DebtsPage() {
-  return <DebtsClient/>
+export default async function AllDebtsPage() {
+  return <AllDebtsClient/>
 }

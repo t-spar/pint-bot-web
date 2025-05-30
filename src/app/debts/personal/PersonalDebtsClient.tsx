@@ -7,7 +7,7 @@ import { DebtEntry } from "@/lib/pint-bot-api/utils";
 import { getUserDebts } from "@/lib/pint-bot-api/users";
 import { formatMixed } from "@/lib/utils/formatting";
 
-export default function UserDebtsClient() {
+export default function PersonalDebtsClient() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const [debts, setDebts] = useState<DebtEntry[]>([]);
