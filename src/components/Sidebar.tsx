@@ -26,24 +26,21 @@ export default function Sidebar() {
         }
     }
 
-    const links = ['/', '/all-debts','/my-debts','/user-profile'] as const;
-    const getLabel = (path: string) =>
-        path === '/'
-            ? 'Home'
-            : path
-                .slice(1)
-                .split('-')
-                .map(w => w[0].toUpperCase() + w.slice(1))
-                .join(' ');
+    const links = [
+        { path: '/', label: 'Home' },
+        { path: '/debts/all', label: 'All Debts' },
+        { path: '/debts/personal', label: 'My Debts' },
+        { path: '/user-profile', label: 'User Profile' },
+    ];
 
     return (
         <aside className="w-64 h-screen p-4 border-r bg-[var(--background)] text-[var(--foreground)] flex flex-col">
             <nav className="flex-1">
                 <ul className="space-y-4">
-                    {links.map((path) => (
+                    {links.map(({ path, label }) => (
                         <li key={path}>
                             <Link href={path} className="font-medium hover:underline">
-                                {getLabel(path)}
+                                {label}
                             </Link>
                         </li>
                     ))}
