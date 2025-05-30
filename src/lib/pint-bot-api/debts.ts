@@ -1,10 +1,4 @@
-export type DebtEntry = { id: string; owes: string; isOwed: string }
-
-async function _fetchRaw(path: string) {
-  const res = await fetch(`${path}`, { cache: 'no-store' })
-  if (!res.ok) throw new Error(`API error ${res.status}: ${res.statusText}`)
-  return res.json()
-}
+import { _fetchRaw } from "./utils"
 
 export async function getAllDebts() {
   const json = await _fetchRaw('/api/debts') as Record<string, any>
