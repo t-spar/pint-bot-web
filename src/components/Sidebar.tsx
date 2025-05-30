@@ -26,7 +26,7 @@ export default function Sidebar() {
         }
     }
 
-    const links = ['/', '/view-debts','/user-profile'] as const;
+    const links = ['/', '/all-debts','/my-debts','/user-profile'] as const;
     const getLabel = (path: string) =>
         path === '/'
             ? 'Home'
