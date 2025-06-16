@@ -28,8 +28,6 @@ export default function TransactionSummary() {
         const amount = parseAmount(transaction.amount);
         timestamps.push(new Date(transaction.timestamp).getTime());
 
-        console.log(`${transaction.type}: ${transaction.amount} → ${amount}`);
-
         if (transaction.type === "owe") {
           oweCount++;
           oweTotal += amount;
