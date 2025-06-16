@@ -31,6 +31,7 @@ export default function Sidebar() {
     { path: "/debts/all", label: "All Debts" },
     { path: "/debts/personal", label: "My Debts" },
     { path: "/user-profile", label: "User Profile" },
+    { path: "/stats", label: "Stats" },
   ];
 
   return (
